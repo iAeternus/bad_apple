@@ -4,7 +4,7 @@ use std::{fs::File, io::Write};
 // const ASCII_CHARS: [char; 12] = [' ', '.', ':', ';', '+', '*', '?', '%', 'S', '#', '@', '$'];
 // const ASCII_CHARS: [char; 12] = [' ', ' ', '.', ':', ';', '+', '*', '?', '%', 'S', '#', '@'];
 // const ASCII_CHARS: [char; 4] = [' ', '░', '▒', '▓'];
-const ASCII_CHARS: [char; 12] = ['$', '@', '#', 'S', '%', '?', '*', '+', ';', ':', ' ', ' '];
+const ASCII_CHARS: [char; 13] = ['$', '@', '#', 'S', '%', '?', '*', '+', ';', ':', '.', ' ', ' '];
 const FRAMES_CNT: u32 = 6571;
 const OUTPUT_PATH: &str = "F:\\Develop\\rust\\bad_apple\\resources\\bad_apple_frames.txt";
 
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for i in 1..=FRAMES_CNT {
         let path = format!("frames/{:04}.png", i);
         let img = Reader::open(&path)?.decode()?;
-        let ascii_frame = img_to_ascii(&img, 84, 42);
+        let ascii_frame = img_to_ascii(&img, 120, 42);
         writeln!(writer, "---FRAME---\n{}", ascii_frame)?;
     }
 
