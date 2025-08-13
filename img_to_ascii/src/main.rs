@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for i in 1..=FRAMES_CNT {
         let path = format!("frames/{:04}.png", i);
         let img = Reader::open(&path)?.decode()?;
-        let ascii_frame = img_to_ascii(&img, 120, 60);
+        let ascii_frame = img_to_ascii(&img, 84, 42);
         writeln!(writer, "---FRAME---\n{}", ascii_frame)?;
     }
 

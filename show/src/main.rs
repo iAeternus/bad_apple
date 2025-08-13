@@ -1,7 +1,7 @@
 use crossterm::{
     ExecutableCommand, QueueableCommand,
     cursor::{Hide, MoveTo, Show},
-    terminal::{Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, size},
 };
 use rodio::{Decoder, OutputStream, Source};
 use std::fs;
@@ -25,24 +25,28 @@ fn main() -> io::Result<()> {
     // 设置终端模式
     let mut stdout = BufWriter::new(stdout());
     stdout.execute(EnterAlternateScreen)?;
-    stdout.execute(Clear(ClearType::All))?;
     stdout.execute(Hide)?;
     stdout.flush()?;
 
+    // 获取终端尺寸
+    let (_, rows) = size()?;
+
+    // 设置帧率
     let start_time = Instant::now();
     let frame_duration = Duration::from_millis(33); // 30fps约为33ms/帧
     let mut next_frame_time = start_time;
 
-    for frame_idx in 0..frames.len() {
-        render_frame(&mut stdout, frames[frame_idx])?; // 渲染当前帧
-        next_frame_time += frame_duration; // 更新下一帧时间
+    // 渲染每一帧
+    for frame in frames.iter() {
+        render_frame(&mut stdout, frame, rows)?;
+        next_frame_time += frame_duration;
         let now = Instant::now();
         if now < next_frame_time {
             thread::sleep(next_frame_time - now);
         }
     }
 
-    // 恢复终端设置
+    // 恢复终端模式
     stdout.execute(Show)?;
     stdout.execute(LeaveAlternateScreen)?;
     stdout.flush()?;
@@ -51,9 +55,22 @@ fn main() -> io::Result<()> {
 }
 
 // 渲染函数
-fn render_frame(stdout: &mut BufWriter<io::Stdout>, frame: &str) -> io::Result<()> {
-    stdout.queue(MoveTo(0, 0))?;
-    let cleaned_frame = frame.replace('\n', "\x1B[K\n"); // 行尾清除，避免重影
-    write!(stdout, "{}\x1B[K", cleaned_frame)?;
+fn render_frame(stdout: &mut BufWriter<io::Stdout>, frame: &str, rows: u16) -> io::Result<()> {
+    let frame_lines: Vec<&str> = frame.lines().collect();
+    let frame_height = frame_lines.len();
+    let max_lines = rows as usize;
+
+    // 渲染帧的每一行
+    for y in 0..frame_height {
+        stdout.queue(MoveTo(0, y as u16))?;
+        write!(stdout, "{}", frame_lines[y])?;
+    }
+
+    // 清除剩余行
+    for y in frame_height..max_lines {
+        stdout.queue(MoveTo(0, y as u16))?;
+        write!(stdout, "\x1B[K")?;
+    }
+
     stdout.flush()
 }
