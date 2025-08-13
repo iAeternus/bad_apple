@@ -1,2 +1,4 @@
 [workspace]
-members = ["img_to_ascii"]
+members = ["img_to_ascii", "show"]
+
+resolver = "3"

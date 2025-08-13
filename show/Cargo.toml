@@ -1,0 +1,8 @@
+[package]
+name = "show"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rodio = "0.17.1"
+crossterm = "0.27.0"

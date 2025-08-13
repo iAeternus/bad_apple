@@ -1,9 +1,10 @@
 use image::{DynamicImage, GenericImageView, Pixel, io::Reader};
-use std::ascii;
-use std::fs::{File, ReadDir};
-use std::io::Write;
+use std::{fs::File, io::Write};
 
-const ASCII_CHARS: [char; 12] = [' ', '.', ':', ';', '+', '*', '?', '%', 'S', '#', '@', '$'];
+// const ASCII_CHARS: [char; 12] = [' ', '.', ':', ';', '+', '*', '?', '%', 'S', '#', '@', '$'];
+// const ASCII_CHARS: [char; 12] = [' ', ' ', '.', ':', ';', '+', '*', '?', '%', 'S', '#', '@'];
+// const ASCII_CHARS: [char; 4] = [' ', '░', '▒', '▓'];
+const ASCII_CHARS: [char; 12] = ['$', '@', '#', 'S', '%', '?', '*', '+', ';', ':', ' ', ' '];
 const FRAMES_CNT: u32 = 6571;
 const OUTPUT_PATH: &str = "F:\\Develop\\rust\\bad_apple\\resources\\bad_apple_frames.txt";
 
